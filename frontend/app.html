@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ragify</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+    <div class="logo-area">
+      <div class="logo-icon"><i class="fa-solid fa-music"></i></div>
+      <div class="logo-text">
+        <h1>Ragify</h1>
+        <span>PREMIUM MUSIC ENGINE</span>
+      </div>
+    </div>
+    
+    <div class="tools-section">
+      <div class="section-title">TOOLS</div>
+
+      <button class="tool-btn active" data-mode="Ragify Assistant">
+        <span class="tool-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <div class="tool-info">
+          <span class="tool-name">Ragify Assistant</span>
+          <span class="tool-desc">Universal AI router.</span>
+        </div>
+      </button>
+      
+      <button class="tool-btn" data-mode="Sound Effects">
+        <span class="tool-icon"><i class="fa-solid fa-wave-square"></i></span>
+        <div class="tool-info">
+          <span class="tool-name">Sound Effects</span>
+          <span class="tool-desc">Generate cinematic sound fx.</span>
+        </div>
+      </button>
+      
+
+      
+      <button class="tool-btn" data-mode="Text to Voice">
+        <span class="tool-icon"><i class="fa-solid fa-microphone"></i></span>
+        <div class="tool-info">
+          <span class="tool-name">Text to Voice</span>
+          <span class="tool-desc">Convert script to speech.</span>
+        </div>
+      </button>
+      
+      <button class="tool-btn" data-mode="Scenario to Song">
+        <span class="tool-icon"><i class="fa-solid fa-headphones"></i></span>
+        <div class="tool-info">
+          <span class="tool-name">Scenario to Song</span>
+          <span class="tool-desc">AI song recommendations.</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="visualizer-graphic">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- CHAT MAIN -->
+  <main class="chat-main">
+    <header class="chat-header">
+      <div class="chat-header-info">
+        <h2 id="chatModeTitle">Scenario to Song</h2>
+        <p id="chatModeDesc">AI song recommendations.</p>
+      </div>
+      <div class="api-status">
+        <button id="clearChatBtn" class="action-icon-btn" style="color: var(--text-muted); margin-right: 15px;" title="Clear Chat & Start Fresh"><i class="fa-solid fa-trash"></i></button>
+        <div class="status-dot"></div>
+        <span id="apiStatusText">API Online</span>
+      </div>
+    </header>
+
+    <div class="chat-messages-container" id="chatMessages">
+      <div class="chat-message bot">
+        <div class="message-bubble">
+          Hello! I am your AI Sound Design Chatbot. Select a tool on the left and tell me what you want to create!
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-container">
+      <div class="chat-input-wrapper">
+        <button id="micBtn" class="action-icon-btn chat-mic-btn" title="Voice Input"><i class="fa-solid fa-microphone"></i></button>
+        <textarea id="promptInput" placeholder="Type your prompt here..." rows="1"></textarea>
+        <button id="sendBtn" class="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+      <div class="chat-footer-text">
+        Ragify Chatbot remembers your context. Send follow-up messages to modify your sound!
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR (HISTORY) -->
+  <aside class="sidebar-right">
+    <div class="history-section-wrapper">
+      <div class="history-header">
+        <div class="section-title">SESSION HISTORY</div>
+        <div class="history-count">See all</div>
+      </div>
+      
+      <div id="historyList" class="history-list">
+        <div class="empty-state">
+          <h3>Your history is empty.</h3>
+          <p>Generate some audio to see it here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden audio element for actual playback -->
+    <audio id="mainAudioPlayer" style="display: none;"></audio>
+  </aside>
+
+  <!-- BOTTOM PLAYER -->
+  <footer class="bottom-player">
+    <div class="player-info">
+      <img id="playerArt" src="https://via.placeholder.com/60" alt="Album Art" class="player-art" style="display: none;">
+      <div class="player-text-group">
+        <div id="playerTitle" class="player-title">No Audio</div>
+        <div id="playerDesc" class="player-desc">Select an item</div>
+      </div>
+      <button class="action-icon-btn"><i class="fa-regular fa-heart"></i></button>
+    </div>
+    
+    <div class="audio-controls-center">
+      <div class="playback-buttons">
+        <button class="play-action-btn"><i class="fa-solid fa-backward-step"></i></button>
+        <button id="customPlayPauseBtn" class="play-action-btn main-play"><i class="fa-solid fa-play"></i></button>
+        <button class="play-action-btn"><i class="fa-solid fa-forward-step"></i></button>
+        <button class="play-action-btn"><i class="fa-solid fa-repeat"></i></button>
+      </div>
+      <div class="playback-timeline">
+        <span id="currentTimeDisplay">0:00</span> / <span id="durationDisplay">0:00</span>
+        <div class="progress-bar-container" id="progressBarContainer">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="player-actions">
+      <button class="action-icon-btn"><i class="fa-solid fa-volume-high"></i></button>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+      <button id="downloadBtn" class="download-btn" disabled>Download <i class="fa-solid fa-download"></i></button>
+      <button class="action-icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+    </div>
+  </footer>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>

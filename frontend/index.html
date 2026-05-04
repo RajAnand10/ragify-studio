@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Ragify</title>
+  <link rel="stylesheet" href="styles.css?v=2" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      background-image: radial-gradient(circle at top right, rgba(168, 85, 247, 0.15), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.15), transparent 40%);
+    }
+    .auth-container {
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 150px;
+      height: 150px;
+      background: var(--gradient-main);
+      filter: blur(80px);
+      opacity: 0.3;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-header i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.5));
+    }
+    .auth-header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.02em;
+    }
+    .auth-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .input-group i {
+      position: absolute;
+      left: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .input-group input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem 1.2rem 1.2rem 3.2rem;
+      color: var(--text-main);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: rgba(168, 85, 247, 0.5);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+      background: var(--bg-card);
+    }
+    .auth-btn {
+      width: 100%;
+      background: var(--gradient-main);
+      color: white;
+      border: none;
+      padding: 1.2rem;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+    }
+    .auth-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(236, 72, 153, 0.6);
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .auth-switch span {
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .auth-switch span:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    .error-msg {
+      color: #ef4444;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      min-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <i class="fa-solid fa-compact-disc fa-spin-pulse" style="--fa-animation-duration: 3s;"></i>
+      <h1 id="formTitle">Welcome to Ragify</h1>
+      <p id="formSubtitle">Enter your details to access the studio.</p>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <form id="authForm">
+      <div class="input-group">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" id="username" placeholder="Username" required autocomplete="username">
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="auth-btn" id="submitBtn">Log In</button>
+    </form>
+
+    <div class="auth-switch">
+      <span id="switchText">Don't have an account? Sign up</span>
+    </div>
+  </div>
+
+  <script>
+    let isLoginMode = true;
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const submitBtn = document.getElementById('submitBtn');
+    const switchText = document.getElementById('switchText');
+    const authForm = document.getElementById('authForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    switchText.addEventListener('click', () => {
+      isLoginMode = !isLoginMode;
+      errorMsg.textContent = '';
+      if (isLoginMode) {
+        formTitle.textContent = 'Welcome to Ragify';
+        formSubtitle.textContent = 'Enter your details to access the studio.';
+        submitBtn.textContent = 'Log In';
+        switchText.innerHTML = "Don't have an account? <span>Sign up</span>";
+      } else {
+        formTitle.textContent = 'Create Account';
+        formSubtitle.textContent = 'Join the Ragify studio.';
+        submitBtn.textContent = 'Sign Up';
+        switchText.innerHTML = "Already have an account? <span>Log in</span>";
+      }
+    });
+
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      errorMsg.textContent = '';
+
+      if (username.length < 3 || password.length < 3) {
+        errorMsg.textContent = 'Username and password must be at least 3 characters.';
+        return;
+      }
+
+      const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/signup';
+      submitBtn.textContent = 'Processing...';
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || 'Authentication failed');
+        }
+
+        // Success!
+        localStorage.setItem('currentUser', data.username);
+        localStorage.setItem('currentUserId', data.user_id);
+        window.location.href = 'app.html';
+        
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        submitBtn.textContent = isLoginMode ? 'Log In' : 'Sign Up';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

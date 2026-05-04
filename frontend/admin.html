@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - AI Sound Designer</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      padding: 3rem;
+    }
+    .admin-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(25, 24, 37, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1.5rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    h1 i {
+      color: var(--primary);
+    }
+    .back-btn {
+      background: rgba(255,255,255,0.05);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    th {
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+    .password-field {
+      font-family: monospace;
+      color: var(--primary);
+      background: rgba(236, 72, 153, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <div class="header">
+      <h1><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</h1>
+      <a href="app.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Studio</a>
+    </div>
+
+    <table id="usersTable" style="display: none;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Plain Text Password</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody id="usersBody">
+      </tbody>
+    </table>
+    
+    <div id="loading" class="loading">
+      <i class="fa-solid fa-spinner fa-spin"></i> Fetching user database...
+    </div>
+  </div>
+
+  <script>
+    // Quick admin guard (just checks if logged in for prototype purposes)
+    if (!localStorage.getItem('currentUser')) {
+        window.location.href = '/';
+    }
+
+    async function loadUsers() {
+      try {
+        const response = await fetch('/api/admin/users');
+        if (!response.ok) throw new Error('Failed to fetch');
+        
+        const data = await response.json();
+        const tbody = document.getElementById('usersBody');
+        
+        data.users.forEach(user => {
+          const tr = document.createElement('tr');
+          
+          const date = new Date(user.created_at).toLocaleString();
+          
+          tr.innerHTML = `
+            <td>${user.id}</td>
+            <td style="font-weight: 500;">${user.username}</td>
+            <td><span class="password-field">${user.password}</span></td>
+            <td style="color: var(--text-muted); font-size: 0.9rem;">${date}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('usersTable').style.display = 'table';
+      } catch (err) {
+        document.getElementById('loading').innerHTML = `<span style="color: #ef4444;">Error loading users: ${err.message}</span>`;
+      }
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
